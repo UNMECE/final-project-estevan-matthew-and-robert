@@ -48,36 +48,40 @@ void solveProblems(AcequiaManager& manager)
 
 /*example 2 format*/
 
-void solveProblems(AcequiaManager& manager)
-{
-	auto canals = manager.getCanals();
-	while(!manager.isSolved && manager.hour!=manager.SimulationMax)
-	{
+
+void solveProblems(AcequiaManager& manager) {
+    const std::vector<Canal*>& canals = manager.getCanals();
+    const std::vector<Region*>& regions = manager.getRegions();
+
+    while (!manager.isSolved && manager.hour < manager.SimulationMax) {
+        for (Canal* canal : canals) {
+            Region* src = canal->sourceRegion;
+            Region* dst = canal->destinationRegion;
+            bool open = false;
+            if (dst->waterLevel < dst->waterNeed && canal->waterSource->waterLevel > 0) {
+                open = true;
+            } else if (src->waterLevel > src->waterNeed) {
+                open = true;
+            }
+            canal->toggleOpen(open);
+            if (open) canal->setFlowRate(1.0);
+        }
+        manager.nexthour();
+    }
+}
+
+
 	//Students will implement this function to solve the probelms
 	//Example: Adjust canal flow rates and directions
-		if(manager.hour==0)
-		{
-			canals[0]->setFlowRate(1);
-			canals[0]->toggleOpen(true);
-		}
-		else if(manager.hour==1)
-		{
-			canals[1]->setFlowRate(0.5);
-			canals[1]->toggleOpen(true);
-		}
-		else if(manager.hour==82)
-		{
-			canals[0]->toggleOpen(false);
-			canals[1]->toggleOpen(false);
-		}
+		
 	//student may add any necessary functions or check on the progress of each region as the simulation moves forward. 
 	//The manager takes care of updating the waterLevels of each region and waterSource while the student is just expected
 	//to solve how to address the state of each region
 
 		
-		manager.nexthour();
-	}
-}
+		
+	
+
 
 
 /*example 2*/
